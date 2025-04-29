@@ -4,4 +4,21 @@ server:
 spring:
   application:
     name: CloudTrainerJPA320
-
+  datasource:
+    url: jdbc:postgresql://localhost:5432/distcomp
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: distcomp
+        format_sql: true
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+    default-schema: distcomp
+    enabled: true
