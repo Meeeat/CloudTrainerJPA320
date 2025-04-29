@@ -1,0 +1,7 @@
+server:
+  port: 24110
+
+spring:
+  application:
+    name: CloudTrainerJPA320
+
