@@ -1,12 +1,10 @@
 package com.cloudtrainerjpa320.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +14,8 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"markers"})
+@EqualsAndHashCode(exclude = {"markers"})
 public class Tweet {
 
     @Id
@@ -41,12 +41,13 @@ public class Tweet {
     @OneToMany(mappedBy = "tweet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Notice> notices;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "tbl_tweet_marker",
             joinColumns = @JoinColumn(name = "tweet_id"),
             inverseJoinColumns = @JoinColumn(name = "marker_id")
     )
-    private Set<Marker> markers;
+    @Builder.Default
+    private Set<Marker> markers = new HashSet<>();
 
 }

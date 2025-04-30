@@ -2,11 +2,9 @@ package com.cloudtrainerjpa320.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -15,6 +13,8 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"tweets"})
+@EqualsAndHashCode(exclude = {"tweets"})
 public class Marker {
 
     @Id
@@ -26,6 +26,7 @@ public class Marker {
     private String name;
 
     @ManyToMany(mappedBy = "markers")
-    private Set<Tweet> tweets;
+    @Builder.Default
+    private Set<Tweet> tweets = new HashSet<>();
 
 }
