@@ -9,6 +9,15 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      pool-name: CloudTrainerJpaHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      auto-commit: true
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
@@ -18,7 +27,17 @@ spring:
       hibernate:
         default_schema: distcomp
         format_sql: true
+        connection:
+          isolation: 2
+          provider_disables_autocommit: false
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
     default-schema: distcomp
     enabled: true
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.zaxxer.hikari: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
