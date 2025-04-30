@@ -1,72 +1,46 @@
 package com.cloudtrainerjpa320.service;
 
-import com.cloudtrainerjpa320.exception.EntityNotFoundException;
 import com.cloudtrainerjpa320.mapper.CreatorDto;
 import com.cloudtrainerjpa320.mapper.creator.CreatorRequestTo;
 import com.cloudtrainerjpa320.mapper.creator.CreatorResponseTo;
 import com.cloudtrainerjpa320.model.Creator;
 import com.cloudtrainerjpa320.repository.CreatorRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
-@RequiredArgsConstructor
-public class CreatorService {
+@Slf4j
+public class CreatorService extends BaseService<Creator, CreatorRequestTo, CreatorResponseTo, Long> {
 
-    public final CreatorRepository repository;
-    public final CreatorDto mapper;
+    private final CreatorDto mapper;
 
-    @Transactional(readOnly = true)
-    public List<CreatorResponseTo> getAll() {
-        return repository
-                .findAll()
-                .stream()
-                .map(mapper::out)
-                .toList();
+    public CreatorService(CreatorRepository repository, CreatorDto mapper) {
+        super(repository);
+        this.mapper = mapper;
     }
 
-    @Transactional(readOnly = true)
-    public Page<CreatorResponseTo> getAll(Pageable pageable) {
-        return repository
-                .findAll(pageable)
-                .map(mapper::out);
+    @Override
+    protected CreatorResponseTo mapToResponse(Creator entity) {
+        return mapper.out(entity);
     }
 
-    @Transactional(readOnly = true)
-    public CreatorResponseTo get(Long id) {
-        return repository
-                .findById(id)
-                .map(mapper::out)
-                .orElseThrow(() -> new EntityNotFoundException("get Creator not found with id: " + id));
+    @Override
+    protected Creator mapToEntity(CreatorRequestTo dto) {
+        return mapper.in(dto);
     }
 
-    @Transactional
-    public CreatorResponseTo create(CreatorRequestTo input) {
-        Creator entity = mapper.in(input);
+    @Override
+    protected Long getDtoId(CreatorRequestTo dto) {
+        return dto.getId();
+    }
+
+    @Override
+    protected void beforeCreate(Creator entity) {
         entity.setId(null);
-        return mapper.out(repository.save(entity));
     }
 
-    @Transactional
-    public CreatorResponseTo update(CreatorRequestTo input) {
-        if (input.getId() == null || !repository.existsById(input.getId())) {
-            throw new EntityNotFoundException("update Creator not found with id: " + input.getId());
-        }
-        Creator entity = mapper.in(input);
-        return mapper.out(repository.save(entity));
-    }
-
-    @Transactional
-    public boolean delete(Long id) {
-        if (!repository.existsById(id)) {
-            return false;
-        }
-        repository.deleteById(id);
-        return true;
+    @Override
+    protected String getEntityName() {
+        return "Creator";
     }
 }

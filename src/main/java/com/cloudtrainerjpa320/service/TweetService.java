@@ -7,84 +7,70 @@ import com.cloudtrainerjpa320.mapper.tweet.TweetResponseTo;
 import com.cloudtrainerjpa320.model.Tweet;
 import com.cloudtrainerjpa320.repository.CreatorRepository;
 import com.cloudtrainerjpa320.repository.TweetRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
-@RequiredArgsConstructor
-public class TweetService {
+@Slf4j
+public class TweetService extends BaseService<Tweet, TweetRequestTo, TweetResponseTo, Long> {
 
-    private final TweetRepository repository;
-    private final CreatorRepository creatorRepository;
     private final TweetDto mapper;
+    private final CreatorRepository creatorRepository;
 
-    @Transactional(readOnly = true)
-    public List<TweetResponseTo> getAll() {
-        return repository
-                .findAll()
-                .stream()
-                .map(mapper::out)
-                .toList();
+    public TweetService(TweetRepository repository, TweetDto mapper, CreatorRepository creatorRepository) {
+        super(repository);
+        this.mapper = mapper;
+        this.creatorRepository = creatorRepository;
     }
 
-    @Transactional(readOnly = true)
-    public Page<TweetResponseTo> getAll(Pageable pageable) {
-        return repository
-                .findAll(pageable)
-                .map(mapper::out);
+    @Override
+    protected TweetResponseTo mapToResponse(Tweet entity) {
+        return mapper.out(entity);
     }
 
-    @Transactional(readOnly = true)
-    public TweetResponseTo get(Long id) {
-        return repository
-                .findById(id)
-                .map(mapper::out)
-                .orElseThrow(() -> new EntityNotFoundException("Tweet not found with id: " + id));
+    @Override
+    protected Tweet mapToEntity(TweetRequestTo dto) {
+        return mapper.in(dto);
     }
 
-    @Transactional
-    public TweetResponseTo create(TweetRequestTo input) {
-        Tweet entity = mapper.in(input);
+    @Override
+    protected Long getDtoId(TweetRequestTo dto) {
+        return dto.getId();
+    }
+
+    @Override
+    protected void beforeCreate(Tweet entity) {
         entity.setId(null);
-
-        entity.setCreator(creatorRepository.findById(input.getCreatorId())
-                .orElseThrow(() -> new EntityNotFoundException("create Creator in Tweet not found with id: " + input.getCreatorId())));
-
-        if (entity.getCreated() == null) {
-            entity.setCreated(LocalDateTime.now());
-        }
-
-        return mapper.out(repository.save(entity));
+        setCreatorAndTimestamps(entity, true);
     }
 
-    @Transactional
-    public TweetResponseTo update(TweetRequestTo input) {
-        if (input.getId() == null || !repository.existsById(input.getId())) {
-            throw new EntityNotFoundException("Tweet not found with id: " + input.getId());
-        }
-
-        Tweet entity = mapper.in(input);
-
-        entity.setCreator(creatorRepository.findById(input.getCreatorId())
-                .orElseThrow(() -> new EntityNotFoundException("update Creator in Tweet not found with id: " + input.getCreatorId())));
-
-        entity.setModified(LocalDateTime.now());
-
-        return mapper.out(repository.save(entity));
+    @Override
+    protected void beforeUpdate(Tweet entity) {
+        setCreatorAndTimestamps(entity, false);
     }
 
-    @Transactional
-    public boolean delete(Long id) {
-        if (!repository.existsById(id)) {
-            return false;
+    @Override
+    protected String getEntityName() {
+        return "Tweet";
+    }
+
+    private void setCreatorAndTimestamps(Tweet entity, boolean isCreate) {
+        if (entity.getCreator() != null && entity.getCreator().getId() != null) {
+            Long creatorId = entity.getCreator().getId();
+            entity.setCreator(creatorRepository.findById(creatorId)
+                    .orElseThrow(() -> new EntityNotFoundException("Creator not found with id: " + creatorId)));
+        } else {
+            throw new EntityNotFoundException("Creator ID must not be null");
         }
-        repository.deleteById(id);
-        return true;
+
+        if (isCreate) {
+            if (entity.getCreated() == null) {
+                entity.setCreated(LocalDateTime.now());
+            }
+        } else {
+            entity.setModified(LocalDateTime.now());
+        }
     }
 }
