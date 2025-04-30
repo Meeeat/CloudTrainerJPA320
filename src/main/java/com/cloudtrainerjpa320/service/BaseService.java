@@ -64,7 +64,11 @@ public abstract class BaseService<E, D, R, ID> {
     @Transactional
     public R update(D dto) {
         ID id = getDtoId(dto);
-        if (id == null || !repository.existsById(id)) {
+        if (id == null) {
+            throw new EntityNotFoundException(getEntityName() + " id is null");
+        }
+
+        if (!repository.existsById(id)) {
             throw new EntityNotFoundException(getEntityName() + " not found with id: " + id);
         }
 
