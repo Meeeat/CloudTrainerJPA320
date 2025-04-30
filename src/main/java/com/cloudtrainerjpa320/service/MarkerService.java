@@ -1,50 +1,73 @@
 package com.cloudtrainerjpa320.service;
 
+import com.cloudtrainerjpa320.exception.EntityNotFoundException;
 import com.cloudtrainerjpa320.mapper.MarkerDto;
 import com.cloudtrainerjpa320.mapper.marker.MarkerRequestTo;
 import com.cloudtrainerjpa320.mapper.marker.MarkerResponseTo;
-import com.cloudtrainerjpa320.repository.impl.MarkerRepoImpl;
-import lombok.AllArgsConstructor;
+import com.cloudtrainerjpa320.model.Marker;
+import com.cloudtrainerjpa320.repository.MarkerRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MarkerService {
 
-    public final MarkerRepoImpl repoImpl;
-    public final MarkerDto mapper;
+    private final MarkerRepository repository;
+    private final MarkerDto mapper;
 
+    @Transactional(readOnly = true)
     public List<MarkerResponseTo> getAll() {
-        return repoImpl
-                .getAll()
+        return repository
+                .findAll()
+                .stream()
                 .map(mapper::out)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public Page<MarkerResponseTo> getAll(Pageable pageable) {
+        return repository
+                .findAll(pageable)
+                .map(mapper::out);
+    }
+
+    @Transactional(readOnly = true)
     public MarkerResponseTo get(Long id) {
-        return repoImpl
-                .get(id)
+        return repository
+                .findById(id)
                 .map(mapper::out)
-                .orElseThrow();
+                .orElseThrow(() -> new EntityNotFoundException("get Marker not found with id: " + id));
     }
 
+    @Transactional
     public MarkerResponseTo create(MarkerRequestTo input) {
-        return repoImpl
-                .create(mapper.in(input))
-                .map(mapper::out)
-                .orElseThrow();
+        Marker entity = mapper.in(input);
+        entity.setId(null);
+        return mapper.out(repository.save(entity));
     }
 
+    @Transactional
     public MarkerResponseTo update(MarkerRequestTo input) {
-        return repoImpl
-                .update(mapper.in(input))
-                .map(mapper::out)
-                .orElseThrow();
+        if (input.getId() == null || !repository.existsById(input.getId())) {
+            throw new EntityNotFoundException("update Marker not found with id: " + input.getId());
+        }
+
+        Marker entity = mapper.in(input);
+        return mapper.out(repository.save(entity));
     }
 
+    @Transactional
     public boolean delete(Long id) {
-        return repoImpl.delete(id);
+        if (!repository.existsById(id)) {
+            return false;
+        }
+        repository.deleteById(id);
+        return true;
     }
 }
