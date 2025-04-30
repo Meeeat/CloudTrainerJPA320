@@ -4,6 +4,8 @@ import com.cloudtrainerjpa320.mapper.marker.MarkerRequestTo;
 import com.cloudtrainerjpa320.mapper.marker.MarkerResponseTo;
 import com.cloudtrainerjpa320.service.MarkerService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,6 +26,11 @@ public class MarkerController {
     @GetMapping
     public Collection<MarkerResponseTo> getAll() {
         return markerService.getAll();
+    }
+
+    @GetMapping("/paged")
+    public Page<MarkerResponseTo> getAllPaged(Pageable pageable) {
+        return markerService.getAll(pageable);
     }
 
     @PostMapping

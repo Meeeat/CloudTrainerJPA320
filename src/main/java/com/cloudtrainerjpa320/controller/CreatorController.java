@@ -4,6 +4,8 @@ import com.cloudtrainerjpa320.mapper.creator.CreatorRequestTo;
 import com.cloudtrainerjpa320.mapper.creator.CreatorResponseTo;
 import com.cloudtrainerjpa320.service.CreatorService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,6 +26,11 @@ public class CreatorController {
     @GetMapping
     public Collection<CreatorResponseTo> getAll() {
         return creatorService.getAll();
+    }
+
+    @GetMapping("/paged")
+    public Page<CreatorResponseTo> getAllPaged(Pageable pageable) {
+        return creatorService.getAll(pageable);
     }
 
     @PostMapping

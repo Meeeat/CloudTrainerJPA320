@@ -4,6 +4,8 @@ import com.cloudtrainerjpa320.mapper.notice.NoticeRequestTo;
 import com.cloudtrainerjpa320.mapper.notice.NoticeResposeTo;
 import com.cloudtrainerjpa320.service.NoticeService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,6 +26,11 @@ public class NoticeController {
     @GetMapping
     public Collection<NoticeResposeTo> getAll() {
         return noticeService.getAll();
+    }
+
+    @GetMapping("/paged")
+    public Page<NoticeResposeTo> getAllPaged(Pageable pageable) {
+        return noticeService.getAll(pageable);
     }
 
     @PostMapping

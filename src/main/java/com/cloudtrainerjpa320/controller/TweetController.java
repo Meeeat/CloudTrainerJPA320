@@ -4,6 +4,8 @@ import com.cloudtrainerjpa320.mapper.tweet.TweetRequestTo;
 import com.cloudtrainerjpa320.mapper.tweet.TweetResponseTo;
 import com.cloudtrainerjpa320.service.TweetService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,6 +26,11 @@ public class TweetController {
     @GetMapping
     public Collection<TweetResponseTo> getAll() {
         return tweetService.getAll();
+    }
+
+    @GetMapping("/paged")
+    public Page<TweetResponseTo> getAllPaged(Pageable pageable) {
+        return tweetService.getAll(pageable);
     }
 
     @PostMapping
