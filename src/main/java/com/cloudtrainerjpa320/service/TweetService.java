@@ -65,12 +65,15 @@ public class TweetService extends BaseService<Tweet, TweetRequestTo, TweetRespon
             throw new EntityNotFoundException("Creator ID must not be null");
         }
 
+        LocalDateTime now = LocalDateTime.now();
+
         if (isCreate) {
             if (entity.getCreated() == null) {
-                entity.setCreated(LocalDateTime.now());
+                entity.setCreated(now);
             }
+            entity.setModified(now);
         } else {
-            entity.setModified(LocalDateTime.now());
+            entity.setModified(now);
         }
     }
 }
