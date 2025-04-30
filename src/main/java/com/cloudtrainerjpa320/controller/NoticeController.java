@@ -1,7 +1,7 @@
 package com.cloudtrainerjpa320.controller;
 
 import com.cloudtrainerjpa320.mapper.notice.NoticeRequestTo;
-import com.cloudtrainerjpa320.mapper.notice.NoticeResposeTo;
+import com.cloudtrainerjpa320.mapper.notice.NoticeResponseTo;
 import com.cloudtrainerjpa320.service.NoticeService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -24,24 +24,24 @@ public class NoticeController {
     }
 
     @GetMapping
-    public Collection<NoticeResposeTo> getAll() {
+    public Collection<NoticeResponseTo> getAll() {
         return noticeService.getAll();
     }
 
     @GetMapping("/paged")
-    public Page<NoticeResposeTo> getAllPaged(Pageable pageable) {
+    public Page<NoticeResponseTo> getAllPaged(Pageable pageable) {
         return noticeService.getAll(pageable);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public NoticeResposeTo create(@RequestBody @Valid NoticeRequestTo inputDto) {
+    public NoticeResponseTo create(@RequestBody @Valid NoticeRequestTo inputDto) {
         return noticeService.create(inputDto);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public NoticeResposeTo update(@RequestBody @Valid NoticeRequestTo inputDto) {
+    public NoticeResponseTo update(@RequestBody @Valid NoticeRequestTo inputDto) {
         try {
             return noticeService.update(inputDto);
         } catch (NoSuchElementException e) {
@@ -50,7 +50,7 @@ public class NoticeController {
     }
 
     @GetMapping("/{id}")
-    public NoticeResposeTo read(@PathVariable long id) {
+    public NoticeResponseTo read(@PathVariable long id) {
         return noticeService.get(id);
     }
 

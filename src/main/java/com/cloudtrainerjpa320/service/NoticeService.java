@@ -3,7 +3,7 @@ package com.cloudtrainerjpa320.service;
 import com.cloudtrainerjpa320.exception.EntityNotFoundException;
 import com.cloudtrainerjpa320.mapper.NoticeDto;
 import com.cloudtrainerjpa320.mapper.notice.NoticeRequestTo;
-import com.cloudtrainerjpa320.mapper.notice.NoticeResposeTo;
+import com.cloudtrainerjpa320.mapper.notice.NoticeResponseTo;
 import com.cloudtrainerjpa320.model.Notice;
 import com.cloudtrainerjpa320.model.Tweet;
 import com.cloudtrainerjpa320.repository.NoticeRepository;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class NoticeService extends BaseService<Notice, NoticeRequestTo, NoticeResposeTo, Long> {
+public class NoticeService extends BaseService<Notice, NoticeRequestTo, NoticeResponseTo, Long> {
 
     private final NoticeDto mapper;
     private final TweetRepository tweetRepository;
@@ -25,7 +25,7 @@ public class NoticeService extends BaseService<Notice, NoticeRequestTo, NoticeRe
     }
 
     @Override
-    protected NoticeResposeTo mapToResponse(Notice entity) {
+    protected NoticeResponseTo mapToResponse(Notice entity) {
         return mapper.out(entity);
     }
 

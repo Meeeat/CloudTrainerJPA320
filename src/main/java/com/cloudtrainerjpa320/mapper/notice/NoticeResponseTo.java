@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NoticeResposeTo {
+public class NoticeResponseTo {
 
     Long id;
     Long tweetId;

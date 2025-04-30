@@ -1,7 +1,7 @@
 package com.cloudtrainerjpa320.mapper;
 
 import com.cloudtrainerjpa320.mapper.notice.NoticeRequestTo;
-import com.cloudtrainerjpa320.mapper.notice.NoticeResposeTo;
+import com.cloudtrainerjpa320.mapper.notice.NoticeResponseTo;
 import com.cloudtrainerjpa320.model.Notice;
 import com.cloudtrainerjpa320.model.Tweet;
 import org.mapstruct.Mapper;
@@ -12,7 +12,7 @@ import org.mapstruct.Named;
 public interface NoticeDto {
 
     @Mapping(target = "tweetId", source = "tweet.id")
-    NoticeResposeTo out(Notice entity);
+    NoticeResponseTo out(Notice entity);
 
     @Mapping(target = "tweet", source = "tweetId", qualifiedByName = "idToTweet")
     Notice in(NoticeRequestTo inputDto);
