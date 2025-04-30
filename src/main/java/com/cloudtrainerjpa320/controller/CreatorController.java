@@ -1,5 +1,6 @@
 package com.cloudtrainerjpa320.controller;
 
+import com.cloudtrainerjpa320.exception.EntityNotFoundException;
 import com.cloudtrainerjpa320.mapper.creator.CreatorRequestTo;
 import com.cloudtrainerjpa320.mapper.creator.CreatorResponseTo;
 import com.cloudtrainerjpa320.service.CreatorService;
@@ -59,7 +60,7 @@ public class CreatorController {
     public void delete(@PathVariable long id) {
         boolean delete = creatorService.delete(id);
         if (!delete) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new EntityNotFoundException("Creator not found with id: " + id);
         }
     }
 }

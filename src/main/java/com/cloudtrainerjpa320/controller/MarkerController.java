@@ -1,5 +1,6 @@
 package com.cloudtrainerjpa320.controller;
 
+import com.cloudtrainerjpa320.exception.EntityNotFoundException;
 import com.cloudtrainerjpa320.mapper.marker.MarkerRequestTo;
 import com.cloudtrainerjpa320.mapper.marker.MarkerResponseTo;
 import com.cloudtrainerjpa320.service.MarkerService;
@@ -59,7 +60,7 @@ public class MarkerController {
     public void delete(@PathVariable long id) {
         boolean delete = markerService.delete(id);
         if (!delete) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new EntityNotFoundException("Marker not found with id: " + id);
         }
     }
 }

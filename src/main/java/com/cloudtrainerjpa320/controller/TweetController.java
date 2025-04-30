@@ -1,5 +1,6 @@
 package com.cloudtrainerjpa320.controller;
 
+import com.cloudtrainerjpa320.exception.EntityNotFoundException;
 import com.cloudtrainerjpa320.mapper.tweet.TweetRequestTo;
 import com.cloudtrainerjpa320.mapper.tweet.TweetResponseTo;
 import com.cloudtrainerjpa320.service.TweetService;
@@ -59,7 +60,7 @@ public class TweetController {
     public void delete(@PathVariable long id) {
         boolean delete = tweetService.delete(id);
         if (!delete) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new EntityNotFoundException("Tweet not found with id: " + id);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.cloudtrainerjpa320.controller;
 
+import com.cloudtrainerjpa320.exception.EntityNotFoundException;
 import com.cloudtrainerjpa320.mapper.notice.NoticeRequestTo;
 import com.cloudtrainerjpa320.mapper.notice.NoticeResponseTo;
 import com.cloudtrainerjpa320.service.NoticeService;
@@ -59,7 +60,7 @@ public class NoticeController {
     public void delete(@PathVariable long id) {
         boolean delete = noticeService.delete(id);
         if (!delete) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new EntityNotFoundException("Notice not found with id: " + id);
         }
     }
 }
