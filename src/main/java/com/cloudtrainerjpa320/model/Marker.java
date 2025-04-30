@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(schema = "distcomp", name = "tbl_marker")
+@Table(name = "tbl_marker")
 @Data
 @Builder
 @NoArgsConstructor

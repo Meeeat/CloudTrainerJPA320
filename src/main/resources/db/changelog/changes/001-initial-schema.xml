@@ -5,9 +5,24 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
 
-    <changeSet id="001-create-schema" author="siberia">
+    <!-- Удаляем схему, если она существует -->
+    <changeSet id="000-drop-schema" author="siberia" runAlways="true">
+        <sql>
+            DROP SCHEMA IF EXISTS distcomp CASCADE;
+        </sql>
+    </changeSet>
+
+    <!-- Создаем схему -->
+    <changeSet id="001-create-schema" author="siberia" runAlways="true">
         <sql>
             CREATE SCHEMA IF NOT EXISTS distcomp;
+        </sql>
+    </changeSet>
+
+    <!-- Переключаемся на схему distcomp для всех последующих операций -->
+    <changeSet id="001-set-schema-search-path" author="siberia" runAlways="true">
+        <sql>
+            SET search_path TO distcomp;
         </sql>
     </changeSet>
 
@@ -91,8 +106,8 @@
         <addPrimaryKey
                 tableName="tbl_tweet_marker"
                 columnNames="tweet_id, marker_id"
-                schemaName="distcomp"
-                constraintName="pk_tweet_marker"/>
+                constraintName="pk_tweet_marker"
+                schemaName="distcomp"/>
     </changeSet>
 
 </databaseChangeLog>

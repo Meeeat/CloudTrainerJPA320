@@ -2,42 +2,22 @@ server:
   port: 24110
 
 spring:
-  application:
-    name: CloudTrainerJPA320
   datasource:
     url: jdbc:postgresql://localhost:5432/distcomp
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-    type: com.zaxxer.hikari.HikariDataSource
     hikari:
-      minimum-idle: 5
-      maximum-pool-size: 20
-      idle-timeout: 30000
-      pool-name: CloudTrainerJpaHikariCP
-      max-lifetime: 1800000
-      connection-timeout: 30000
-      auto-commit: true
+      connection-init-sql: DROP SCHEMA IF EXISTS distcomp CASCADE; CREATE SCHEMA IF NOT EXISTS distcomp; SET search_path TO distcomp;
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
-        default_schema: distcomp
-        format_sql: true
-        connection:
-          isolation: 2
-          provider_disables_autocommit: false
+        default_schema: public
   liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.xml
-    default-schema: distcomp
-    enabled: true
+    enabled: false
 
 logging:
   level:
     org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    com.zaxxer.hikari: DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE

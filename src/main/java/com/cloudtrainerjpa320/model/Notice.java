@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(schema = "distcomp", name = "tbl_notice")
+@Table(name = "tbl_notice")
 @Data
 @Builder
 @NoArgsConstructor

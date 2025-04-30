@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 import java.util.List;
 
 @Entity
-@Table(schema = "distcomp", name = "tbl_creator")
+@Table(name = "tbl_creator")
 @Data
 @Builder
 @NoArgsConstructor
