@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface NoticeDto {
 
-    @Mapping(target = "tweetId", source = "tweet.id")
     NoticeResposeTo out(Notice entity);
 
     @Mapping(target = "tweet", ignore = true)

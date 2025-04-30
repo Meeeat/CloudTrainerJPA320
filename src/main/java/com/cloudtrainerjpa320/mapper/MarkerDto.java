@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface MarkerDto {
 
-    @Mapping(target = "tweets", ignore = true)
     MarkerResponseTo out(Marker entity);
 
     @Mapping(target = "tweets", ignore = true)

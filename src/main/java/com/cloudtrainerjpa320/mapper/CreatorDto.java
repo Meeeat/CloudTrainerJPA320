@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface CreatorDto {
 
-    @Mapping(target = "tweets", ignore = true)
     CreatorResponseTo out(Creator entity);
 
     @Mapping(target = "tweets", ignore = true)
