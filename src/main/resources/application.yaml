@@ -5,7 +5,7 @@ spring:
   application:
     name: CloudTrainerJPA320
   datasource:
-    url: jdbc:postgresql://localhost:5432/distcomp
+    url: jdbc:postgresql://localhost:5432/distcomp?currentSchema=distcomp
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -21,3 +21,8 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
     default-schema: distcomp
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE

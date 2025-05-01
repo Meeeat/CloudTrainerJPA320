@@ -20,7 +20,7 @@ public class Tweet extends BaseEntity {
     @JoinColumn(name = "creator_id", nullable = false)
     private Creator creator;
 
-    @Column(name = "title", nullable = false, length = 64)
+    @Column(name = "title", nullable = false, length = 64, unique = true)
     private String title;
 
     @Column(name = "content", nullable = false, length = 2048)
