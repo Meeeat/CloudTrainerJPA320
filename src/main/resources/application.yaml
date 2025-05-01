@@ -2,22 +2,23 @@ server:
   port: 24110
 
 spring:
+  application:
+    name: CloudTrainerJPA320
   datasource:
-    url: jdbc:postgresql://localhost:5432/distcomp
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-    hikari:
-      connection-init-sql: DROP SCHEMA IF EXISTS distcomp CASCADE; CREATE SCHEMA IF NOT EXISTS distcomp; SET search_path TO distcomp;
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
+    show-sql: true
     properties:
       hibernate:
-        default_schema: public
+        format_sql: true
+        default_schema: distcomp
   liquibase:
-    enabled: false
-
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    default-schema: distcomp
+    enabled: true

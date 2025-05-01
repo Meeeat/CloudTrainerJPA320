@@ -32,7 +32,7 @@
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="login" type="VARCHAR(64)">
-                <constraints nullable="false" />
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="password" type="VARCHAR(128)">
                 <constraints nullable="false" />

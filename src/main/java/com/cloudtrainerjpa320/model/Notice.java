@@ -5,13 +5,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
-@Table(name = "tbl_notice")
+@Table(name = "tbl_notice", schema = "distcomp")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "tweet")
+@ToString(exclude = "tweet")
 public class Notice {
 
     @Id
@@ -22,7 +26,6 @@ public class Notice {
     @JoinColumn(name = "tweet_id", nullable = false)
     private Tweet tweet;
 
-    @Column(nullable = false, length = 2048)
+    @Column(length = 2048)
     private String content;
-
 }
