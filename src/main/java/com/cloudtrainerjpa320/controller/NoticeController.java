@@ -1,5 +1,6 @@
 package com.cloudtrainerjpa320.controller;
 
+import com.cloudtrainerjpa320.filter.NoticeFilter;
 import com.cloudtrainerjpa320.mapper.notice.NoticeRequestTo;
 import com.cloudtrainerjpa320.mapper.notice.NoticeResposeTo;
 import com.cloudtrainerjpa320.service.NoticeService;
@@ -44,6 +45,20 @@ public class NoticeController {
             @PathVariable Long tweetId,
             @PageableDefault(size = 20) Pageable pageable) {
         return noticeService.getByTweetId(tweetId, pageable);
+    }
+
+    @GetMapping("/filter")
+    public Page<NoticeResposeTo> filter(
+            @RequestParam(required = false) Long tweetId,
+            @RequestParam(required = false) String content,
+            @PageableDefault(size = 20) Pageable pageable) {
+
+        NoticeFilter filter = NoticeFilter.builder()
+                .tweetId(tweetId)
+                .content(content)
+                .build();
+
+        return noticeService.getAll(filter, pageable);
     }
 
     @PostMapping

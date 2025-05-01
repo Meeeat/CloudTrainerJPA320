@@ -1,5 +1,6 @@
 package com.cloudtrainerjpa320.controller;
 
+import com.cloudtrainerjpa320.filter.CreatorFilter;
 import com.cloudtrainerjpa320.mapper.creator.CreatorRequestTo;
 import com.cloudtrainerjpa320.mapper.creator.CreatorResponseTo;
 import com.cloudtrainerjpa320.service.CreatorService;
@@ -32,6 +33,22 @@ public class CreatorController {
     @GetMapping("/paged")
     public Page<CreatorResponseTo> getAllPaged(@PageableDefault(size = 20) Pageable pageable) {
         return creatorService.getAll(pageable);
+    }
+
+    @GetMapping("/filter")
+    public Page<CreatorResponseTo> filter(
+            @RequestParam(required = false) String login,
+            @RequestParam(required = false) String firstname,
+            @RequestParam(required = false) String lastname,
+            @PageableDefault(size = 20) Pageable pageable) {
+
+        CreatorFilter filter = CreatorFilter.builder()
+                .login(login)
+                .firstname(firstname)
+                .lastname(lastname)
+                .build();
+
+        return creatorService.getAll(filter, pageable);
     }
 
     @PostMapping

@@ -1,5 +1,6 @@
 package com.cloudtrainerjpa320.controller;
 
+import com.cloudtrainerjpa320.filter.TweetFilter;
 import com.cloudtrainerjpa320.mapper.tweet.TweetRequestTo;
 import com.cloudtrainerjpa320.mapper.tweet.TweetResponseTo;
 import com.cloudtrainerjpa320.service.TweetService;
@@ -7,10 +8,12 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
@@ -44,6 +47,26 @@ public class TweetController {
             @PathVariable Long creatorId,
             @PageableDefault(size = 20) Pageable pageable) {
         return tweetService.getByCreatorId(creatorId, pageable);
+    }
+
+    @GetMapping("/filter")
+    public Page<TweetResponseTo> filter(
+            @RequestParam(required = false) Long creatorId,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String content,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createdFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createdTo,
+            @PageableDefault(size = 20) Pageable pageable) {
+
+        TweetFilter filter = TweetFilter.builder()
+                .creatorId(creatorId)
+                .title(title)
+                .content(content)
+                .createdFrom(createdFrom)
+                .createdTo(createdTo)
+                .build();
+
+        return tweetService.getAll(filter, pageable);
     }
 
     @PostMapping

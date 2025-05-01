@@ -1,5 +1,6 @@
 package com.cloudtrainerjpa320.controller;
 
+import com.cloudtrainerjpa320.filter.MarkerFilter;
 import com.cloudtrainerjpa320.mapper.marker.MarkerRequestTo;
 import com.cloudtrainerjpa320.mapper.marker.MarkerResponseTo;
 import com.cloudtrainerjpa320.service.MarkerService;
@@ -41,6 +42,18 @@ public class MarkerController {
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
+    }
+
+    @GetMapping("/filter")
+    public Page<MarkerResponseTo> filter(
+            @RequestParam(required = false) String name,
+            @PageableDefault(size = 20) Pageable pageable) {
+
+        MarkerFilter filter = MarkerFilter.builder()
+                .name(name)
+                .build();
+
+        return markerService.getAll(filter, pageable);
     }
 
     @PostMapping
