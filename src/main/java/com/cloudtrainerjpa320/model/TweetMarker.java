@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tbl_tweet_marker", schema = "distcomp")
+@Table(name = "tbl_tweet_marker")
 @Data
 @Builder
 @NoArgsConstructor

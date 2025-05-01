@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "tbl_marker", schema = "distcomp")
+@Table(name = "tbl_marker")
 @Data
 @Builder
 @NoArgsConstructor

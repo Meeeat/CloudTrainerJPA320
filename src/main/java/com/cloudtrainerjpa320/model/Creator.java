@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "tbl_creator", schema = "distcomp")
+@Table(name = "tbl_creator")
 @Data
 @Builder
 @NoArgsConstructor

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "tbl_tweet", schema = "distcomp")
+@Table(name = "tbl_tweet")
 @Data
 @Builder
 @NoArgsConstructor

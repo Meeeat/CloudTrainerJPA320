@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity
-@Table(name = "tbl_notice", schema = "distcomp")
+@Table(name = "tbl_notice")
 @Data
 @Builder
 @NoArgsConstructor
