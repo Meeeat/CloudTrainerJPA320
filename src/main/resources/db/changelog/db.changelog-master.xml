@@ -3,7 +3,16 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
-    <include file="db/changelog/changes/001-initial-schema.xml"/>
+    <changeSet id="1" author="Siberia">
+        <sql>
+            CREATE SCHEMA IF NOT EXISTS distcomp;
+        </sql>
+    </changeSet>
+
+    <include file="db/changelog/changes/01-create-tables.xml"/>
+    <include file="db/changelog/changes/02-add-indexes.xml"/>
+    <include file="db/changelog/changes/03-add-test-data.xml"/>
+
 </databaseChangeLog>

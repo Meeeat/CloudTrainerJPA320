@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="add-test-data" author="Siberia">
+        <!-- Insert test Creators -->
+        <insert tableName="tbl_creator" schemaName="distcomp">
+            <column name="login">johndoe</column>
+            <column name="password">password123</column>
+            <column name="firstname">John</column>
+            <column name="lastname">Doe</column>
+        </insert>
+        <insert tableName="tbl_creator" schemaName="distcomp">
+            <column name="login">janedoe</column>
+            <column name="password">securepass456</column>
+            <column name="firstname">Jane</column>
+            <column name="lastname">Doe</column>
+        </insert>
+        <insert tableName="tbl_creator" schemaName="distcomp">
+            <column name="login">bobsmith</column>
+            <column name="password">bobspassword</column>
+            <column name="firstname">Bob</column>
+            <column name="lastname">Smith</column>
+        </insert>
+
+        <!-- Insert test Markers -->
+        <insert tableName="tbl_marker" schemaName="distcomp">
+            <column name="name">Technology</column>
+        </insert>
+        <insert tableName="tbl_marker" schemaName="distcomp">
+            <column name="name">Science</column>
+        </insert>
+        <insert tableName="tbl_marker" schemaName="distcomp">
+            <column name="name">Art</column>
+        </insert>
+        <insert tableName="tbl_marker" schemaName="distcomp">
+            <column name="name">Travel</column>
+        </insert>
+        <insert tableName="tbl_marker" schemaName="distcomp">
+            <column name="name">Food</column>
+        </insert>
+
+        <!-- Insert test Tweets -->
+        <insert tableName="tbl_tweet" schemaName="distcomp">
+            <column name="creator_id">1</column>
+            <column name="title">My First Tweet</column>
+            <column name="content">This is the content of my first tweet. I'm excited to share my thoughts!</column>
+            <column name="created">CURRENT_TIMESTAMP</column>
+        </insert>
+        <insert tableName="tbl_tweet" schemaName="distcomp">
+            <column name="creator_id">1</column>
+            <column name="title">Technology News</column>
+            <column name="content">Just read about the latest advancements in AI. The future is here!</column>
+            <column name="created">CURRENT_TIMESTAMP</column>
+        </insert>
+        <insert tableName="tbl_tweet" schemaName="distcomp">
+            <column name="creator_id">2</column>
+            <column name="title">Travel Experiences</column>
+            <column name="content">Just returned from my amazing trip to Japan. The cherry blossoms were beautiful!</column>
+            <column name="created">CURRENT_TIMESTAMP</column>
+        </insert>
+        <insert tableName="tbl_tweet" schemaName="distcomp">
+            <column name="creator_id">3</column>
+            <column name="title">Favorite Books</column>
+            <column name="content">Just finished reading 'The Alchemist'. Highly recommend it to everyone!</column>
+            <column name="created">CURRENT_TIMESTAMP</column>
+        </insert>
+        <insert tableName="tbl_tweet" schemaName="distcomp">
+            <column name="creator_id">2</column>
+            <column name="title">Food Recipe</column>
+            <column name="content">Here's my special recipe for chocolate chip cookies. Enjoy!</column>
+            <column name="created">CURRENT_TIMESTAMP</column>
+        </insert>
+
+        <!-- Insert test Notices -->
+        <insert tableName="tbl_notice" schemaName="distcomp">
+            <column name="tweet_id">1</column>
+            <column name="content">Great first tweet! Looking forward to more.</column>
+        </insert>
+        <insert tableName="tbl_notice" schemaName="distcomp">
+            <column name="tweet_id">2</column>
+            <column name="content">AI is indeed transforming our world!</column>
+        </insert>
+        <insert tableName="tbl_notice" schemaName="distcomp">
+            <column name="tweet_id">3</column>
+            <column name="content">Japan is on my bucket list!</column>
+        </insert>
+        <insert tableName="tbl_notice" schemaName="distcomp">
+            <column name="tweet_id">3</column>
+            <column name="content">Did you visit Tokyo? Any recommendations?</column>
+        </insert>
+        <insert tableName="tbl_notice" schemaName="distcomp">
+            <column name="tweet_id">4</column>
+            <column name="content">I love that book too! Paulo Coelho is amazing.</column>
+        </insert>
+        <insert tableName="tbl_notice" schemaName="distcomp">
+            <column name="tweet_id">5</column>
+            <column name="content">Thanks for sharing! Will try this weekend.</column>
+        </insert>
+
+        <!-- Insert test TweetMarker relationships -->
+        <insert tableName="tbl_tweet_marker" schemaName="distcomp">
+            <column name="tweet_id">2</column>
+            <column name="marker_id">1</column>
+        </insert>
+        <insert tableName="tbl_tweet_marker" schemaName="distcomp">
+            <column name="tweet_id">2</column>
+            <column name="marker_id">2</column>
+        </insert>
+        <insert tableName="tbl_tweet_marker" schemaName="distcomp">
+            <column name="tweet_id">3</column>
+            <column name="marker_id">4</column>
+        </insert>
+        <insert tableName="tbl_tweet_marker" schemaName="distcomp">
+            <column name="tweet_id">4</column>
+            <column name="marker_id">3</column>
+        </insert>
+        <insert tableName="tbl_tweet_marker" schemaName="distcomp">
+            <column name="tweet_id">5</column>
+            <column name="marker_id">5</column>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
