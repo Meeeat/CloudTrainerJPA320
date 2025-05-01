@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+
+    <changeSet id="1" author="siberia">
+        <createTable tableName="tbl_creator">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="login" type="varchar(64)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="firstname" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastname" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="tbl_tweet">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="creator_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="varchar(2048)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="tbl_marker">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(32)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="tbl_notice">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="tweet_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="varchar(2048)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="tbl_tweet_marker">
+            <column name="tweet_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="marker_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="siberia">
+        <addForeignKeyConstraint baseTableName="tbl_tweet"
+                                 baseColumnNames="creator_id"
+                                 referencedTableName="tbl_creator"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_tweet_creator"/>
+
+        <addForeignKeyConstraint baseTableName="tbl_notice"
+                                 baseColumnNames="tweet_id"
+                                 referencedTableName="tbl_tweet"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_notice_tweet"/>
+
+        <addForeignKeyConstraint baseTableName="tbl_tweet_marker"
+                                 baseColumnNames="tweet_id"
+                                 referencedTableName="tbl_tweet"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_tweet_marker_tweet"/>
+
+        <addForeignKeyConstraint baseTableName="tbl_tweet_marker"
+                                 baseColumnNames="marker_id"
+                                 referencedTableName="tbl_marker"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_tweet_marker_marker"/>
+
+        <addPrimaryKey tableName="tbl_tweet_marker"
+                       columnNames="tweet_id,marker_id"/>
+    </changeSet>
+
+    <changeSet id="3" author="siberia">
+        <addUniqueConstraint
+                tableName="tbl_tweet"
+                columnNames="title"
+                constraintName="uc_tweet_title"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,43 +1,30 @@
 package com.cloudtrainerjpa320.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "tbl_creator")
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(exclude = "tweets")
-@ToString(exclude = "tweets")
-public class Creator {
+@Getter
+@Setter
+public class Creator extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, length = 64)
+    @Column(name = "login", nullable = false, length = 64, unique = true)
     private String login;
 
-    @Column(nullable = false, length = 128)
+    @Column(name = "password", nullable = false, length = 128)
     private String password;
 
-    @Column(nullable = false, length = 64)
+    @Column(name = "firstname", nullable = false, length = 64)
     private String firstname;
 
-    @Column(nullable = false, length = 64)
+    @Column(name = "lastname", nullable = false, length = 64)
     private String lastname;
 
-    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     private List<Tweet> tweets = new ArrayList<>();
 }

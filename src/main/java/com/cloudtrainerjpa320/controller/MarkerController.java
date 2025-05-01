@@ -1,92 +1,63 @@
 package com.cloudtrainerjpa320.controller;
 
-import com.cloudtrainerjpa320.filter.MarkerFilter;
-import com.cloudtrainerjpa320.mapper.marker.MarkerRequestTo;
-import com.cloudtrainerjpa320.mapper.marker.MarkerResponseTo;
-import com.cloudtrainerjpa320.service.MarkerService;
+import com.cloudtrainerjpa320.dto.request.MarkerRequestTo;
+import com.cloudtrainerjpa320.dto.response.MarkerResponseTo;
+import com.cloudtrainerjpa320.mapper.MarkerMapper;
+import com.cloudtrainerjpa320.model.Marker;
+import com.cloudtrainerjpa320.service.impl.MarkerServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collection;
-import java.util.NoSuchElementException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1.0/markers")
 public class MarkerController {
 
-    private final MarkerService markerService;
+    private final MarkerServiceImpl markerService;
+    private final MarkerMapper markerMapper;
 
-    public MarkerController(MarkerService markerService) {
+    public MarkerController(MarkerServiceImpl markerService, MarkerMapper markerMapper) {
         this.markerService = markerService;
-    }
-
-    @GetMapping
-    public Collection<MarkerResponseTo> getAll() {
-        return markerService.getAll();
-    }
-
-    @GetMapping("/paged")
-    public Page<MarkerResponseTo> getAllPaged(@PageableDefault(size = 20) Pageable pageable) {
-        return markerService.getAll(pageable);
-    }
-
-    @GetMapping("/name/{name}")
-    public MarkerResponseTo getByName(@PathVariable String name) {
-        try {
-            return markerService.getByName(name);
-        } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
-    }
-
-    @GetMapping("/filter")
-    public Page<MarkerResponseTo> filter(
-            @RequestParam(required = false) String name,
-            @PageableDefault(size = 20) Pageable pageable) {
-
-        MarkerFilter filter = MarkerFilter.builder()
-                .name(name)
-                .build();
-
-        return markerService.getAll(filter, pageable);
+        this.markerMapper = markerMapper;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public MarkerResponseTo create(@RequestBody @Valid MarkerRequestTo inputDto) {
-        return markerService.create(inputDto);
-    }
-
-    @PutMapping
-    @ResponseStatus(HttpStatus.OK)
-    public MarkerResponseTo update(@RequestBody @Valid MarkerRequestTo inputDto) {
-        try {
-            return markerService.update(inputDto);
-        } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+    public MarkerResponseTo create(@Valid @RequestBody MarkerRequestTo requestTo) {
+        Marker marker = markerMapper.toEntity(requestTo);
+        return markerMapper.toDto(markerService.create(marker));
     }
 
     @GetMapping("/{id}")
-    public MarkerResponseTo read(@PathVariable long id) {
-        try {
-            return markerService.get(id);
-        } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+    public MarkerResponseTo getById(@PathVariable Long id) {
+        return markerMapper.toDto(markerService.getById(id));
+    }
+
+    @GetMapping
+    public List<MarkerResponseTo> getAll() {
+        return markerService.getAll().stream()
+                .map(markerMapper::toDto)
+                .toList();
+    }
+
+    @PutMapping("/{id}")
+    public MarkerResponseTo update(@PathVariable Long id, @Valid @RequestBody MarkerRequestTo requestTo) {
+        Marker marker = markerMapper.toEntity(requestTo);
+        return markerMapper.toDto(markerService.update(id, marker));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable long id) {
-        boolean deleted = markerService.delete(id);
-        if (!deleted) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Marker not found with id: " + id);
-        }
+    public void deleteById(@PathVariable Long id) {
+        markerService.deleteById(id);
+    }
+
+    @GetMapping("/search")
+    public Page<MarkerResponseTo> search(@RequestParam String name, Pageable pageable) {
+        return markerService.findByNameContaining(name, pageable).map(markerMapper::toDto);
     }
 }

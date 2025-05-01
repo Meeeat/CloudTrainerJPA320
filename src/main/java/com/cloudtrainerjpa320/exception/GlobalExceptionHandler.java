@@ -1,96 +1,108 @@
 package com.cloudtrainerjpa320.exception;
 
-import lombok.extern.slf4j.Slf4j;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
-@Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NoSuchElementException.class)
+    @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handleNoSuchElementException(
-            NoSuchElementException ex, WebRequest request) {
-
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value() * 100 + 01,
-                ex.getMessage()
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex, HttpServletRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.of(
+                ex.getErrorCode(),
+                ex.getMessage(),
+                request.getRequestURI()
         );
-
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ErrorResponse> handleResponseStatusException(
-            ResponseStatusException ex, WebRequest request) {
-
-        HttpStatus status = (HttpStatus) ex.getStatusCode();
-        ErrorResponse errorResponse = new ErrorResponse(
-                status.value() * 100 + 02,
-                ex.getReason()
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleValidationException(ValidationException ex, HttpServletRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.of(
+                ex.getErrorCode(),
+                ex.getMessage(),
+                request.getRequestURI()
         );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 
-        return new ResponseEntity<>(errorResponse, status);
+    @ExceptionHandler(DataConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<ErrorResponse> handleDataConflictException(DataConflictException ex, HttpServletRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.of(
+                ex.getErrorCode(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.joining(", "));
 
-        Map<String, Object> response = new HashMap<>();
-        Map<String, String> errors = new HashMap<>();
-
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-
-        response.put("errorCode", HttpStatus.BAD_REQUEST.value() * 100 + 03);
-        response.put("errorMessage", "Validation failed");
-        response.put("errors", errors);
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
-            IllegalArgumentException ex, WebRequest request) {
-
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value() * 100 + 04,
-                ex.getMessage()
+        ErrorResponse errorResponse = ErrorResponse.of(
+                "400",
+                errorMessage,
+                request.getRequestURI()
         );
-
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<ErrorResponse> handleAllUncaughtException(
-            Exception ex, WebRequest request) {
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex, HttpServletRequest request) {
+        String errorMessage = ex.getConstraintViolations().stream()
+                .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
+                .collect(Collectors.joining(", "));
 
-        log.error("Unexpected error occurred", ex);
-
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value() * 100 + 99,
-                "An unexpected error occurred"
+        ErrorResponse errorResponse = ErrorResponse.of(
+                "400",
+                errorMessage,
+                request.getRequestURI()
         );
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(DuplicateLoginException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<ErrorResponse> handleDuplicateLoginException(
+            DuplicateLoginException ex,
+            HttpServletRequest request
+    ) {
+        ErrorResponse errorResponse = ErrorResponse.of(
+                ex.getErrorCode(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(DuplicateTitleException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<ErrorResponse> handleDuplicateTitleException(
+            DuplicateTitleException ex,
+            HttpServletRequest request
+    ) {
+        ErrorResponse errorResponse = ErrorResponse.of(
+                ex.getErrorCode(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
 }
