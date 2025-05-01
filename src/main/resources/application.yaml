@@ -20,5 +20,8 @@ spring:
         default_schema: distcomp
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
-    default-schema: distcomp
+    default-schema: public  # Изменение схемы по умолчанию на public для таблиц Liquibase
+    liquibase-schema: public  # Схема для служебных таблиц Liquibase
+    parameters:
+      app-schema: distcomp  # Параметр для использования в миграциях
     enabled: true
